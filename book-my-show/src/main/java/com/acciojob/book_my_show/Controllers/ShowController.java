@@ -10,16 +10,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("shows")
 public class ShowController {
+
     @Autowired
     private ShowService showService;
 
-    @PostMapping("add")
-        public ResponseEntity addShow(@RequestBody AddShowRequest showRequest){
-    String response = showService.addShow(showRequest);
-    return new ResponseEntity(response, HttpStatus.OK);
 
+    @PostMapping("add")
+    public ResponseEntity addShow(@RequestBody AddShowRequest addShowRequest){
+
+        String response = showService.addShow(addShowRequest);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
+
+
+
 }
