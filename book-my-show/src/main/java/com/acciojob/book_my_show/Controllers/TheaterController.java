@@ -13,17 +13,22 @@ import org.springframework.web.bind.annotation.*;
 public class TheaterController {
 
     @Autowired
-private TheaterService theaterService;
+    private TheaterService theaterService;
 
     @PostMapping("add")
-    public ResponseEntity addTheater(@RequestBody AddTheaterRequest addTheaterRequest){
-    String response = theaterService.addTheater(addTheaterRequest);
-    return new ResponseEntity(response, HttpStatus.OK);
+    public ResponseEntity addTheater(@RequestBody AddTheaterRequest theaterRequest){
+
+        String response = theaterService.addTheater(theaterRequest);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
+
 
     @PutMapping("associateSeats")
     public ResponseEntity associateSeats(@RequestBody AddTheaterSeatsRequest theaterSeatsRequest){
+
         String response = theaterService.associateTheaterSeats(theaterSeatsRequest);
         return new ResponseEntity(response,HttpStatus.OK);
     }
+
+
 }
