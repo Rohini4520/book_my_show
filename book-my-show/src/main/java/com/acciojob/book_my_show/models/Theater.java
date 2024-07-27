@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Theater {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer theaterId;
@@ -26,10 +25,10 @@ public class Theater {
 
     private String address;
 
-    private Integer noOfScreen;
+    private Integer noOfScreens;
 
-    //Bidirectional mapping in the Parent to keep a record to child
-
+    //Bidirectional mapping in the parent to keep a record of the child
     @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
-    private List<TheaterSeat> theaterSeatList=new ArrayList<>();
+    private List<TheaterSeat> theaterSeatList = new ArrayList<>();
+
 }

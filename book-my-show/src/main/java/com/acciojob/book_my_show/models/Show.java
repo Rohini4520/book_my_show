@@ -10,32 +10,29 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 @Data
+@Table(name = "shows")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "shows")
 public class Show {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer showId; // Matches `int` in the database
 
-    private Integer showId;
+    private LocalDate showDate;
+    private LocalTime showTime;
 
-    private LocalDate showDate; //format-> "YYYY-MM-DD"
-
-    private LocalTime showTime; //format-> "HH-MM-SS"
-
-    @JoinColumn
     @ManyToOne
+    @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @JoinColumn
     @ManyToOne
+    @JoinColumn(name = "theater_id")
     private Theater theater;
 
-    @OneToMany(mappedBy = "show",cascade = CascadeType.ALL)
-    private List<ShowSeat> showSeatList=new ArrayList<>();
-
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
+    private List<ShowSeat> showSeatList = new ArrayList<>();
 }
