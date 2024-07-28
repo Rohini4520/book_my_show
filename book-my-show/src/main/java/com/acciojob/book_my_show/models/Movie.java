@@ -4,7 +4,6 @@ package com.acciojob.book_my_show.models;
 import com.acciojob.book_my_show.Enums.Language;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

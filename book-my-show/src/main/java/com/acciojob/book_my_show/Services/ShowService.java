@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-
-    public class ShowService {
+public class ShowService {
 
     @Autowired
     private ShowRepository showRepository;

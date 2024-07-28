@@ -8,27 +8,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Show_seats")
+@Table(name = "show_seats")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-
 public class ShowSeat {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer showSeatId;
+
     private String seatNo;
 
-    @Enumerated(value=EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private SeatType seatType;
 
     private Boolean isBooked;
-
     private Boolean isFoodAttached;
 
-    @JoinColumn
     @ManyToOne
+    @JoinColumn(name = "show_id") // Matches the updated column
     private Show show;
-
 }

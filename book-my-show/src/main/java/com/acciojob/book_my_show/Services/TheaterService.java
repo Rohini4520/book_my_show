@@ -1,7 +1,8 @@
 package com.acciojob.book_my_show.Services;
 
 import com.acciojob.book_my_show.Enums.SeatType;
-import com.acciojob.book_my_show.Repositories.*;
+import com.acciojob.book_my_show.Repositories.TheaterRepository;
+import com.acciojob.book_my_show.Repositories.TheaterSeatsRepository;
 import com.acciojob.book_my_show.Requests.AddTheaterRequest;
 import com.acciojob.book_my_show.Requests.AddTheaterSeatsRequest;
 import com.acciojob.book_my_show.models.Theater;
@@ -12,77 +13,90 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
-public class TheaterService{
-    @Autowired
-    private TheaterRepository theaterRepository;
+    public class TheaterService {
 
-    @Autowired
-    private TheaterSeatsRepository theaterSeatsRepository;
+        @Autowired
+        private TheaterRepository theaterRepository;
 
-    public String addTheater(AddTheaterRequest theaterRequest){
+        @Autowired
+        private TheaterSeatsRepository theaterSeatsRepository;
 
-        Theater theater = Theater.builder().noOfScreen(theaterRequest.getNoOfScreens())
-                .name(theaterRequest.getName())
-                .address(theaterRequest.getAddress())
-                .build();
+        public String addTheater(AddTheaterRequest theaterRequest){
 
-        theater = theaterRepository.save(theater);
-        return "Theater has been saved to the DB with theaterId "+theater.getTheaterId();
-    }
+            Theater theater = Theater.builder().noOfScreens(theaterRequest.getNoOfScreens())
+                    .name(theaterRequest.getName())
+                    .address(theaterRequest.getAddress())
+                    .build();
 
-    public String associateTheaterSeats(AddTheaterSeatsRequest theaterSeatsRequest) {
+            theater = theaterRepository.save(theater);
+            return "Theater has been saved to the DB with theaterId "+theater.getTheaterId();
+        }
 
-        int theaterId = theaterSeatsRequest.getTheaterId();
-        int noOfClassicSeats = theaterSeatsRequest.getNoOfClassicSeats();
-        int noOfPremiumSeats = theaterSeatsRequest.getNoOfPremiumSeats();
+        public String associateTheaterSeats(AddTheaterSeatsRequest theaterSeatsRequest) {
 
-        List<TheaterSeat> theaterSeatList = new ArrayList<>();
+            int theaterId = theaterSeatsRequest.getTheaterId();
+            int noOfClassicSeats = theaterSeatsRequest.getNoOfClassicSeats();
+            int noOfPremiumSeats = theaterSeatsRequest.getNoOfPremiumSeats();
 
-        //1. Get the theaterEntity from DB
-        Theater theater = theaterRepository.findById(theaterId).get();
+            List<TheaterSeat> theaterSeatList = new ArrayList<>();
 
-        //2. Generate those seatNos through for Classic Seats
+            //1. Get the theaterEntity from DB
+            Theater theater = theaterRepository.findById(theaterId).get();
 
-        int noOfRowsOfClassicSeats = noOfClassicSeats/5; //Complete rows that i can build
-        int noOfSeatsInLastRowClassic = noOfClassicSeats%5;
-        int row;
-        for(row= 1; row<=noOfRowsOfClassicSeats; row++) {
+            //2. Generate those seatNos through for Classic Seats
 
-            for(int j=1;j<=5;j++) {
+            int noOfRowsOfClassicSeats = noOfClassicSeats/5; //Complete rows that i can build
+            int noOfSeatsInLastRowClassic = noOfClassicSeats%5;
+            int row;
+            for(row= 1; row<=noOfRowsOfClassicSeats; row++) {
 
+                for(int j=1;j<=5;j++) {
+
+                    char ch = (char)('A'+j-1);
+                    String seatNo = "" + row + ch;
+
+                    TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
+                            .seatType(SeatType.CLASSIC)
+                            .theater(theater)
+                            .build();
+                    theaterSeatList.add(theaterSeat);
+                }
+            }
+
+            //For the last row
+            for(int j=1;j<=noOfSeatsInLastRowClassic;j++) {
                 char ch = (char)('A'+j-1);
                 String seatNo = "" + row + ch;
-
                 TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
                         .seatType(SeatType.CLASSIC)
                         .theater(theater)
                         .build();
                 theaterSeatList.add(theaterSeat);
             }
-        }
 
-        //For the last row
-        for(int j=1;j<=noOfSeatsInLastRowClassic;j++) {
-            char ch = (char)('A'+j-1);
-            String seatNo = "" + row + ch;
-            TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
-                    .seatType(SeatType.CLASSIC)
-                    .theater(theater)
-                    .build();
-            theaterSeatList.add(theaterSeat);
-        }
+            //Same logic for the premium seats
+            int noOfRowsInPremiumSeats = noOfPremiumSeats/5;
+            int noOfSeatsInLastRowPremium = noOfPremiumSeats%5;
 
-        //Same logic for the premium seats
-        int noOfRowsInPremiumSeats = noOfPremiumSeats/5;
-        int noOfSeatsInLastRowPremium = noOfPremiumSeats%5;
-
-        int currentRow = row;
-        if(noOfSeatsInLastRowClassic>0){
-            currentRow++;
-        }
-        for(row=currentRow;row<=noOfRowsInPremiumSeats+currentRow-1; row++) {
-            for(int j=1;j<=5;j++) {
+            int currentRow = row;
+            if(noOfSeatsInLastRowClassic>0){
+                currentRow++;
+            }
+            for(row=currentRow;row<=noOfRowsInPremiumSeats+currentRow-1; row++) {
+                for(int j=1;j<=5;j++) {
+                    char ch = (char)('A'+j-1);
+                    String seatNo = "" + row + ch;
+                    TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
+                            .seatType(SeatType.PREMIUM)
+                            .theater(theater)
+                            .build();
+                    theaterSeatList.add(theaterSeat);
+                }
+            }
+            //For the last row
+            for(int j=1;j<=noOfSeatsInLastRowPremium;j++){
                 char ch = (char)('A'+j-1);
                 String seatNo = "" + row + ch;
                 TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
@@ -91,23 +105,13 @@ public class TheaterService{
                         .build();
                 theaterSeatList.add(theaterSeat);
             }
-        }
-        //For the last row
-        for(int j=1;j<=noOfSeatsInLastRowPremium;j++){
-            char ch = (char)('A'+j-1);
-            String seatNo = "" + row + ch;
-            TheaterSeat theaterSeat = TheaterSeat.builder().seatNo(seatNo)
-                    .seatType(SeatType.PREMIUM)
-                    .theater(theater)
-                    .build();
-            theaterSeatList.add(theaterSeat);
+
+            theater.setTheaterSeatList(theaterSeatList);
+            theaterRepository.save(theater);
+
+            //Save all the generated Theater seats into the DB
+            theaterSeatsRepository.saveAll(theaterSeatList);
+            return "The theater seats have been associated";
         }
 
-        theater.setTheaterSeatList(theaterSeatList);
-        theaterRepository.save(theater);
-
-        //Save all the generated Theater seats into the DB
-        theaterSeatsRepository.saveAll(theaterSeatList);
-        return "The theater seats have been associated";
-    }
 }

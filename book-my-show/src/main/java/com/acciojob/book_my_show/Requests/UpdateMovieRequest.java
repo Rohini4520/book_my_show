@@ -6,16 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateMovieRequest {
 
     private String movieName;
     private Language newLanguage;
     private Double newRating;
-
-
-
-
 
 }
